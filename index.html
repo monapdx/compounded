@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compounded</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>Compounded</h1>
+        <p class="subtitle">
+          Find words that combine with the prompt word to make a real compound word.
+        </p>
+      </header>
+
+      <section class="status-bar">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span id="score" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Round</span>
+          <span id="round" class="stat-value">1</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Found</span>
+          <span id="found-count" class="stat-value">0</span>
+        </div>
+      </section>
+
+      <section class="game-card">
+        <div class="prompt-wrap">
+          <div class="prompt-label">Prompt word</div>
+          <div id="base-word" class="base-word">Loading...</div>
+        </div>
+
+        <form id="guess-form" class="guess-form" autocomplete="off">
+          <label for="guess-input" class="sr-only">Enter a matching word</label>
+          <input
+            id="guess-input"
+            name="guess"
+            type="text"
+            placeholder="Type a word..."
+            maxlength="30"
+          />
+          <button type="submit">Guess</button>
+        </form>
+
+        <div class="actions">
+          <button id="hint-btn" type="button" class="secondary-btn">Hint</button>
+          <button id="skip-btn" type="button" class="secondary-btn">Skip</button>
+          <button id="new-round-btn" type="button" class="secondary-btn">New Word</button>
+        </div>
+
+        <div id="message" class="message" aria-live="polite"></div>
+
+        <section class="results">
+          <div class="results-header">
+            <h2>Found matches</h2>
+            <span id="remaining-count" class="remaining-count"></span>
+          </div>
+          <ul id="found-list" class="found-list"></ul>
+        </section>
+      </section>
+
+      <section class="help-card">
+        <h2>How to play</h2>
+        <p>
+          If the prompt is <strong>apple</strong>, you might type
+          <strong>sauce</strong> to make <strong>applesauce</strong>.
+        </p>
+        <p>
+          You can enter either the second word alone or the full compound if you want.
+        </p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

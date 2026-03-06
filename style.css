@@ -1,0 +1,247 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1d2433;
+  --muted: #687086;
+  --border: #d9deea;
+  --accent: #3f6df6;
+  --accent-hover: #3259ca;
+  --success-bg: #e9f8ef;
+  --success-text: #1d6b3f;
+  --error-bg: #fff0f0;
+  --error-text: #9f2d2d;
+  --shadow: 0 10px 30px rgba(24, 39, 75, 0.08);
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg, #f8f9fd 0%, #eef2fb 100%);
+  color: var(--text);
+}
+
+.app {
+  width: min(900px, calc(100% - 32px));
+  margin: 32px auto 48px;
+}
+
+.hero {
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.status-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+
+.stat-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.game-card,
+.help-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.game-card {
+  margin-bottom: 20px;
+}
+
+.prompt-wrap {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.prompt-label {
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.base-word {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.guess-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.guess-form input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.guess-form input:focus {
+  border-color: var(--accent);
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 0 18px;
+  height: 52px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent);
+  color: white;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.secondary-btn {
+  background: #eef3ff;
+  color: #2f4eae;
+}
+
+.secondary-btn:hover {
+  background: #dde7ff;
+}
+
+.message {
+  min-height: 52px;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  background: #f4f6fb;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.message.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.message.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.results-header h2,
+.help-card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.remaining-count {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.found-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.found-list li {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fafbff;
+}
+
+.compound-line {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.partner-line {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.help-card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.sr-only {
+  position: absolute;
+  left: -9999px;
+}
+
+@media (max-width: 700px) {
+  .status-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .guess-form {
+    flex-direction: column;
+  }
+
+  .guess-form button,
+  .guess-form input,
+  button {
+    width: 100%;
+  }
+}
