@@ -242,12 +242,15 @@ button:hover {
   }
 
   .guess-form input {
-    width: 100%;
-    height: 72px;
-    font-size: 1.35rem;
-    padding: 0 20px;
-    border-radius: 16px;
-  }
+  flex: 1;
+  min-width: 0;
+  height: 56px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0 18px;
+  font-size: 1.1rem;
+  outline: none;
+}
 
   .guess-form button {
     width: 100%;
