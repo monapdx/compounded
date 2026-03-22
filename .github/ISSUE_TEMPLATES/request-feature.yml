@@ -1,0 +1,31 @@
+name: Request a feature
+description: Request features that will improve the game.
+title: "[Feature]: "
+labels: ["submission", "needs-review"]
+
+body:
+  - type: input
+    id: feature
+    attributes:
+      label: Feature
+      description: Short title for the feature
+      placeholder: e.g. Add multiplayer mode
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: Support for 2 players showdown mode.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Complexity
+      options:
+        - Complex
+        - Moderate
+        - Minor
