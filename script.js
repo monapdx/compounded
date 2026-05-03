@@ -3,6 +3,9 @@ let currentEntry = null;
 let foundPartners = new Set();
 let score = 0;
 let round = 1;
+let roundQueue = [];
+let lastBaseUsed = null;
+let isTransitioning = false;
 
 const baseWordEl = document.getElementById("base-word");
 const scoreEl = document.getElementById("score");
@@ -25,10 +28,52 @@ async function loadGameData() {
   }
 
   const data = await response.json();
+  let droppedEntries = 0;
 
-  gameData = data.filter(
-    (entry) => entry.base && Array.isArray(entry.matches) && entry.matches.length > 0
-  );
+  gameData = Array.isArray(data)
+    ? data
+        .map((entry) => {
+          if (!entry || typeof entry.base !== "string" || !Array.isArray(entry.matches)) {
+            droppedEntries += 1;
+            return null;
+          }
+
+          const base = normalize(entry.base);
+          if (!base) {
+            droppedEntries += 1;
+            return null;
+          }
+
+          const validMatches = entry.matches
+            .filter(
+              (match) =>
+                match &&
+                typeof match.partner === "string" &&
+                typeof match.compound === "string" &&
+                normalize(match.partner) &&
+                normalize(match.compound)
+            )
+            .map((match) => ({
+              partner: normalize(match.partner),
+              compound: normalize(match.compound)
+            }));
+
+          if (validMatches.length === 0) {
+            droppedEntries += 1;
+            return null;
+          }
+
+          return {
+            base,
+            matches: validMatches
+          };
+        })
+        .filter(Boolean)
+    : [];
+
+  if (droppedEntries > 0) {
+    console.warn(`Dropped ${droppedEntries} invalid entries from compounds-clean-edited.json`);
+  }
 }
 
 function normalize(text) {
@@ -49,8 +94,18 @@ function pickRandomEntry() {
     return null;
   }
 
-  const candidates = gameData.filter((entry) => entry.matches.length > 0);
-  return candidates[Math.floor(Math.random() * candidates.length)];
+  if (roundQueue.length === 0) {
+    roundQueue = shuffle(gameData.map((entry) => entry.base));
+
+    // Avoid immediate repeat across cycle boundaries when possible.
+    if (roundQueue.length > 1 && roundQueue[0] === lastBaseUsed) {
+      roundQueue.push(roundQueue.shift());
+    }
+  }
+
+  const nextBase = roundQueue.shift();
+  lastBaseUsed = nextBase;
+  return gameData.find((entry) => entry.base === nextBase) || null;
 }
 
 function setMessage(text, type = "") {
@@ -59,6 +114,13 @@ function setMessage(text, type = "") {
   if (type) {
     messageEl.classList.add(type);
   }
+}
+
+function setControlsDisabled(disabled) {
+  guessInput.disabled = disabled;
+  hintBtn.disabled = disabled;
+  skipBtn.disabled = disabled;
+  newRoundBtn.disabled = disabled;
 }
 
 function updateStats() {
@@ -106,10 +168,10 @@ function renderFoundList() {
 }
 
 function startRound() {
-  currentEntry = pickRandomEntry();
+  const selected = pickRandomEntry();
   foundPartners = new Set();
 
-  if (!currentEntry) {
+  if (!selected) {
     baseWordEl.textContent = "No data";
     setMessage("No playable entries were found in the JSON file.", "error");
     updateStats();
@@ -117,7 +179,10 @@ function startRound() {
     return;
   }
 
-  currentEntry.matches = shuffle(currentEntry.matches);
+  currentEntry = {
+    base: selected.base,
+    matches: shuffle(selected.matches)
+  };
 
   baseWordEl.textContent = currentEntry.base;
   guessInput.value = "";
@@ -162,7 +227,7 @@ function findMatchingEntry(guess) {
 function handleGuessSubmission(event) {
   event.preventDefault();
 
-  if (!currentEntry) return;
+  if (!currentEntry || isTransitioning) return;
 
   const rawGuess = guessInput.value;
   const guess = normalize(rawGuess);
@@ -203,7 +268,9 @@ function handleGuessSubmission(event) {
 }
 
 function skipRound() {
-  if (!currentEntry) return;
+  if (!currentEntry || isTransitioning) return;
+  isTransitioning = true;
+  setControlsDisabled(true);
 
   const unseen = currentEntry.matches.filter(
     (match) => !foundPartners.has(normalize(match.partner))
@@ -215,15 +282,23 @@ function skipRound() {
   }
 
   round += 1;
+  updateStats();
 
   setTimeout(() => {
     startRound();
+    isTransitioning = false;
+    setControlsDisabled(false);
   }, 700);
 }
 
 function nextRound() {
+  if (isTransitioning) return;
+  isTransitioning = true;
+  setControlsDisabled(true);
   round += 1;
   startRound();
+  isTransitioning = false;
+  setControlsDisabled(false);
 }
 
 guessForm.addEventListener("submit", handleGuessSubmission);
